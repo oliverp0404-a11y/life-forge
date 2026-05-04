@@ -826,7 +826,11 @@
           window.open('/dev-menu', '_blank');
         }
       });
-
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        bgMusic.play().catch(() => {});
+      });
+      
       window.addEventListener('beforeunload', () => {
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
       });
