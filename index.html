@@ -469,7 +469,7 @@
       const bgMusic = new Audio("poradovskyi-cozy-chill-lounge-music-469048.mp3");
       const soundSelect = new Audio("universfield-computer-mouse-click-02-383961.mp3");
       const soundRoundEnd = new Audio("u_8g40a9z0la-tada-234709.mp3");
-      bgMusic.volume = 0.15;
+      bgMusic.volume = 0.1;
       bgMusic.loop = true;
       soundSelect.volume = 0.3;
       soundRoundEnd.volume = 0.5;
@@ -696,8 +696,6 @@
         gameActive = false;
         clearInterval(timerInterval);
         soundRoundEnd.play().catch(() => {});
-        bgMusic.pause();
-        bgMusic.currentTime = 0;
         triggerConfetti(150);
 
         showLoadingScreen(() => {
@@ -780,6 +778,8 @@
 
       function startGame() {
         bgMusic.play().catch(() => {});
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
         const countInput = document.getElementById('questionCount');
         let count = parseInt(countInput.value);
         if (isNaN(count) || count < 10) count = 10;
