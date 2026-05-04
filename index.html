@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>✨ would you rather · life forge ✨</title>
+  <style>
+    :root {
+      --bg: #1a1e2b;
+      --bg2: #2a3140;
+      --text: #f1efe6;
+      --panel: rgba(10, 14, 23, 0.75);
+      --btn: rgba(255, 248, 240, 0.08);
+      --border: rgba(255, 255, 255, 0.2);
+      --accent: #f7b05e;
+      --glow: rgba(255, 180, 80, 0.5);
+    }
+
+    [data-theme="light"] {
+      --bg: #f0f0f0;
+      --bg2: #e0e0e0;
+      --text: #1a1a1a;
+      --panel: rgba(255, 255, 255, 0.85);
+      --btn: rgba(0, 0, 0, 0.05);
+      --border: rgba(0, 0, 0, 0.2);
+      --accent: #555;
+      --glow: rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="blue"] {
+      --bg: #1a2a3a;
+      --bg2: #2a4a6a;
+      --text: #e0f0ff;
+      --panel: rgba(10, 20, 35, 0.8);
+      --btn: rgba(200, 220, 255, 0.1);
+      --border: rgba(150, 200, 255, 0.3);
+      --accent: #6ab0ff;
+      --glow: rgba(100, 180, 255, 0.5);
+    }
+
+    [data-theme="green"] {
+      --bg: #1a2a1a;
+      --bg2: #2a4a2a;
+      --text: #e0ffe0;
+      --panel: rgba(10, 20, 10, 0.8);
+      --btn: rgba(200, 255, 200, 0.1);
+      --border: rgba(150, 255, 150, 0.3);
+      --accent: #6aff6a;
+      --glow: rgba(100, 255, 100, 0.5);
+    }
+
+    [data-theme="purple"] {
+      --bg: #1a1a2a;
+      --bg2: #2a2a4a;
+      --text: #e0e0ff;
+      --panel: rgba(15, 10, 25, 0.8);
+      --btn: rgba(200, 200, 255, 0.1);
+      --border: rgba(180, 150, 255, 0.3);
+      --accent: #b06aff;
+      --glow: rgba(150, 100, 255, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+      background: #343434;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      margin: 0;
+      position: relative;
+      overflow-x: hidden;
+      transition: background 0.5s;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 40%, rgba(255, 180, 160, 0.12) 0%, transparent 40%),
+                  radial-gradient(circle at 70% 60%, rgba(160, 200, 255, 0.15) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .game-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 780px;
+      background: var(--panel);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 3rem;
+      padding: 2rem 2rem 2.5rem;
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+      border: 1px solid var(--border);
+      transition: all 0.4s ease;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 700;
+      font-size: 2.4rem;
+      letter-spacing: 2px;
+      color: var(--text);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      margin-bottom: 0.5rem;
+    }
+
+    .round-badge {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.3);
+      display: inline-block;
+      padding: 0.5rem 2rem;
+      border-radius: 3rem;
+      letter-spacing: 1px;
+      backdrop-filter: blur(8px);
+      font-size: 0.95rem;
+    }
+
+    .timer-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      margin: 0.5rem 0 1.2rem;
+      overflow: hidden;
+    }
+
+    .timer-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 10px;
+      transition: width 0.1s linear, background 0.3s;
+      width: 100%;
+    }
+
+    .timer-fill.warning {
+      background: #ff6b6b;
+    }
+
+    .question-panel {
+      background: rgba(10, 14, 23, 0.55);
+      backdrop-filter: blur(12px);
+      border-radius: 2.5rem;
+      padding: 2rem 1.8rem;
+      margin: 1rem 0 1.8rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.6);
+    }
+
+    .question-text {
+      font-size: 1.8rem;
+      font-weight: 600;
+      text-align: center;
+      color: var(--text);
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      margin: 2rem 0 1.5rem;
+    }
+
+    .choice-btn {
+      flex: 1 1 220px;
+      background: var(--btn);
+      backdrop-filter: blur(14px);
+      border: 1.5px solid var(--border);
+      border-radius: 3rem;
+      padding: 1.3rem 1.8rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+      letter-spacing: 0.5px;
+    }
+
+    .choice-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 18px 28px rgba(0,0,0,0.6), 0 0 30px var(--glow);
+    }
+
+    .choice-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .compliment-bar {
+      text-align: center;
+      font-style: italic;
+      color: var(--text);
+      opacity: 0.8;
+      margin-top: 1rem;
+      font-size: 1rem;
+      min-height: 1.8rem;
+      transition: 0.3s;
+    }
+
+    .reaction-bar {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text);
+      opacity: 0.7;
+      margin-top: 0.3rem;
+    }
+
+    .result-life {
+      margin-top: 1.5rem;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(15px);
+      border-radius: 2.2rem;
+      padding: 1.5rem 2rem;
+      border-left: 5px solid var(--accent);
+      color: var(--text);
+      font-weight: 500;
+      font-size: 1.1rem;
+      display: none;
+      line-height: 1.6;
+    }
+
+    .result-life.visible {
+      display: block;
+    }
+
+    .loading-screen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.5rem;
+    }
+
+    .loading-screen.active {
+      display: flex;
+    }
+
+    .loading-steps {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    .setup-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 9998;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .setup-menu.active {
+      display: flex;
+    }
+
+    .setup-panel {
+      background: var(--panel);
+      backdrop-filter: blur(20px);
+      border-radius: 2.5rem;
+      padding: 2.5rem;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .setup-panel h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .setup-panel label {
+      display: block;
+      margin: 1rem 0 0.3rem;
+      font-weight: 600;
+    }
+
+    .setup-panel select, .setup-panel input {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 1.5rem;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.3);
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .setup-panel button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 2rem;
+      background: var(--accent);
+      border: none;
+      color: #000;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .warning-text {
+      color: #ff9f43;
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    @media (max-width: 500px) {
+      .game-container {
+        padding: 1.5rem 1rem;
+      }
+      .question-text {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confettiCanvas"></canvas>
+
+  <div class="loading-screen" id="loadingScreen">
+    <div>✨ generating your new life ✨</div>
+    <div class="loading-steps" id="loadingSteps">getting your answers...</div>
+  </div>
+
+  <div class="setup-menu active" id="setupMenu">
+    <div class="setup-panel">
+      <h2>⚙️ configure your experience</h2>
+      <label>🌗 theme</label>
+      <select id="themeSelect">
+        <option value="dark">dark (black & gray)</option>
+        <option value="light">light (white & gray)</option>
+        <option value="blue">blue ocean</option>
+        <option value="green">green forest</option>
+        <option value="purple">purple haze</option>
+      </select>
+
+      <label>📊 number of questions</label>
+      <input type="number" id="questionCount" min="10" max="35" value="15">
+      <div class="warning-text" id="questionWarning"></div>
+
+      <label>🔥 difficulty</label>
+      <select id="difficultySelect">
+        <option value="easy">easy (40 sec)</option>
+        <option value="normal" selected>normal (25 sec)</option>
+        <option value="hard">hard (18 sec)</option>
+        <option value="extreme">extreme (15 sec)</option>
+      </select>
+
+      <button id="startGameBtn">🚀 begin your journey</button>
+    </div>
+  </div>
+
+  <div class="game-container" id="gameContainer" style="display:none;">
+    <h1>🌗 would you rather</h1>
+    <div style="text-align: center;">
+      <div class="round-badge" id="roundDisplay">round 1</div>
+    </div>
+
+    <div class="timer-bar">
+      <div class="timer-fill" id="timerFill"></div>
+    </div>
+
+    <div class="question-panel">
+      <div class="question-text" id="questionText">Loading...</div>
+    </div>
+
+    <div class="button-group">
+      <button class="choice-btn" id="optionABtn">🔮 <span id="optionASpan">Option A</span></button>
+      <button class="choice-btn" id="optionBBtn">✨ <span id="optionBSpan">Option B</span></button>
+    </div>
+
+    <div class="compliment-bar" id="complimentBar"></div>
+    <div class="reaction-bar" id="reactionBar"></div>
+
+    <div class="result-life" id="lifeResult">
+      <span id="lifeDescription"></span>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const QUESTION_POOL = [
+        { optionA: "Have infinite money but no friends", optionB: "Have deep friendships but struggle financially", difficulty: "easy" },
+        { optionA: "Be able to fly but only 2 feet off the ground", optionB: "Be invisible but only when nobody is looking", difficulty: "easy" },
+        { optionA: "Live in a virtual reality of your perfect life", optionB: "Stay in the real world with all its imperfections", difficulty: "normal" },
+        { optionA: "Always know when someone is lying", optionB: "Always get away with lying", difficulty: "normal" },
+        { optionA: "Have a pause button for life", optionB: "Have a rewind button (10 minutes)", difficulty: "normal" },
+        { optionA: "Speak every language fluently", optionB: "Master every musical instrument", difficulty: "easy" },
+        { optionA: "Explore the deepest ocean", optionB: "Travel to Mars for a week", difficulty: "normal" },
+        { optionA: "Never need sleep again", optionB: "Need only 2 hours of sleep but have vivid dreams", difficulty: "normal" },
+        { optionA: "Eat anything without health consequences", optionB: "Require no food but still enjoy tastes", difficulty: "easy" },
+        { optionA: "Have a personal chef for life", optionB: "Have a personal trainer and perfect health", difficulty: "easy" },
+        { optionA: "Know the date of your death", optionB: "Know the cause of your death", difficulty: "hard" },
+        { optionA: "Relive the same day for a year", optionB: "Skip one year into the future", difficulty: "hard" },
+        { optionA: "Lose all memories but be rich", optionB: "Keep memories but live in poverty", difficulty: "extreme" },
+        { optionA: "Be feared by all", optionB: "Be loved by none", difficulty: "extreme" },
+        { optionA: "Save one stranger or five pets", optionB: "Save five strangers or one pet", difficulty: "hard" },
+        { optionA: "Have unlimited knowledge but no wisdom", optionB: "Have deep wisdom but limited knowledge", difficulty: "hard" },
+        { optionA: "Be unable to lie", optionB: "Be unable to tell the truth", difficulty: "extreme" },
+        { optionA: "Live forever alone", optionB: "Die young surrounded by loved ones", difficulty: "extreme" },
+        { optionA: "Have telepathy but no privacy", optionB: "Have perfect privacy but no deep connections", difficulty: "hard" },
+        { optionA: "Control fire but fear water", optionB: "Control water but fear fire", difficulty: "normal" },
+        { optionA: "Be a genius in a world of average people", optionB: "Be average in a world of geniuses", difficulty: "normal" },
+        { optionA: "Have a clone but share consciousness", optionB: "Live alone but have two bodies", difficulty: "hard" },
+        { optionA: "Never feel physical pain", optionB: "Never feel emotional pain", difficulty: "extreme" },
+        { optionA: "Be able to time travel but only to the past", optionB: "Time travel but only to the future", difficulty: "hard" },
+        { optionA: "Live in a utopia as a slave", optionB: "Live free in a dystopia", difficulty: "extreme" },
+        { optionA: "Have perfect health but be alone", optionB: "Have a loving family but chronic illness", difficulty: "hard" },
+        { optionA: "Be famous but hated", optionB: "Be unknown but deeply respected", difficulty: "normal" },
+        { optionA: "Have super strength but fragile bones", optionB: "Be indestructible but very weak", difficulty: "normal" },
+        { optionA: "Communicate with animals", optionB: "Speak all human languages", difficulty: "easy" },
+        { optionA: "Live on a space station", optionB: "Live under the ocean", difficulty: "normal" },
+        { optionA: "Be able to read minds", optionB: "Be able to control minds", difficulty: "hard" },
+        { optionA: "Have a photographic memory", optionB: "Be able to forget anything at will", difficulty: "normal" },
+        { optionA: "Be the smartest person alive", optionB: "Be the most charismatic person alive", difficulty: "normal" },
+        { optionA: "Never age but can be killed", optionB: "Age normally but be immortal", difficulty: "extreme" },
+        { optionA: "Have infinite knowledge of one subject", optionB: "Have basic knowledge of all subjects", difficulty: "normal" },
+      ];
+
+      const COMPLIMENTS = [
+        "bold choice! the universe nods approvingly.", "interesting... very telling.", "wow, that's a whole vibe.", "the oracle raises an eyebrow.", "fascinating, truly.", "you're full of surprises!", "not what i expected, nice.", "chaotic good energy.", "that's... a choice. respect.", "main character energy detected.",
+        "the council is discussing this one.", "unexpected but iconic.", "you'd survive a movie plot.", "philosopher vibes.", "living on the edge, i see."
+      ];
+
+      const soundSelect = new Audio("https://assets.mixkit.co/active_storage/sfx/2571/2571.wav");
+      const soundRoundEnd = new Audio("https://assets.mixkit.co/active_storage/sfx/1435/1435.wav");
+      const soundGameComplete = new Audio("https://assets.mixkit.co/active_storage/sfx/1124/1124.wav");
+      soundSelect.volume = 0.3;
+      soundRoundEnd.volume = 0.4;
+      soundGameComplete.volume = 0.5;
+
+      let questions = [];
+      let currentRound = 1;
+      let totalRounds = 15;
+      let userChoices = [];
+      let gameActive = false;
+      let timerInterval = null;
+      let timeLeft = 25;
+      let maxTime = 25;
+      let difficulty = "normal";
+      let currentTheme = "dark";
+
+      const questionEl = document.getElementById('questionText');
+      const optionASpan = document.getElementById('optionASpan');
+      const optionBSpan = document.getElementById('optionBSpan');
+      const optionABtn = document.getElementById('optionABtn');
+      const optionBBtn = document.getElementById('optionBBtn');
+      const roundDisplay = document.getElementById('roundDisplay');
+      const timerFill = document.getElementById('timerFill');
+      const complimentBar = document.getElementById('complimentBar');
+      const reactionBar = document.getElementById('reactionBar');
+      const lifeResultDiv = document.getElementById('lifeResult');
+      const lifeDescriptionSpan = document.getElementById('lifeDescription');
+      const loadingScreen = document.getElementById('loadingScreen');
+      const loadingSteps = document.getElementById('loadingSteps');
+      const setupMenu = document.getElementById('setupMenu');
+      const gameContainer = document.getElementById('gameContainer');
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+
+      let confettiParticles = [];
+      let animationFrameId = null;
+      let canvasWidth, canvasHeight;
+
+      function resizeCanvas() {
+        canvasWidth = window.innerWidth;
+        canvasHeight = window.innerHeight;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      function spawnConfetti(count = 60) {
+        for (let i = 0; i < count; i++) {
+          confettiParticles.push({
+            x: Math.random() * canvasWidth,
+            y: Math.random() * -canvasHeight * 0.3,
+            size: Math.random() * 6 + 3,
+            speedY: Math.random() * 6 + 3,
+            speedX: (Math.random() - 0.5) * 3,
+            color: `hsl(${Math.random() * 360}, 80%, 65%)`,
+            rotation: Math.random() * 360,
+            rotationSpeed: (Math.random() - 0.5) * 8,
+          });
+        }
+      }
+
+      function updateConfetti() {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        for (let i = confettiParticles.length - 1; i >= 0; i--) {
+          const p = confettiParticles[i];
+          p.y += p.speedY;
+          p.x += p.speedX;
+          p.rotation += p.rotationSpeed;
+          if (p.y > canvasHeight + 30) { confettiParticles.splice(i, 1); continue; }
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+          ctx.restore();
+        }
+        if (confettiParticles.length > 0) animationFrameId = requestAnimationFrame(updateConfetti);
+        else animationFrameId = null;
+      }
+
+      function triggerConfetti(count = 100) {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        confettiParticles = [];
+        spawnConfetti(count);
+        if (!animationFrameId) updateConfetti();
+      }
+
+      function getUsedQuestions() {
+        try {
+          const stored = localStorage.getItem('wyr_used_questions');
+          return stored ? JSON.parse(stored) : [];
+        } catch(e) { return []; }
+      }
+
+      function addUsedQuestion(q) {
+        const used = getUsedQuestions();
+        used.push(q.optionA + "|||" + q.optionB);
+        if (used.length > 200) used.shift();
+        localStorage.setItem('wyr_used_questions', JSON.stringify(used));
+      }
+
+      function isQuestionUsed(q) {
+        const used = getUsedQuestions();
+        const key = q.optionA + "|||" + q.optionB;
+        return used.includes(key);
+      }
+
+      function getReactionPercent(q) {
+        try {
+          const stored = localStorage.getItem('wyr_reactions');
+          const data = stored ? JSON.parse(stored) : {};
+          const key = q.optionA + "|||" + q.optionB;
+          if (data[key]) {
+            const total = data[key].total || 1;
+            const choseA = data[key].A || 0;
+            return Math.round((choseA / total) * 100);
+          }
+        } catch(e) {}
+        return Math.floor(Math.random() * 40) + 30;
+      }
+
+      function recordReaction(q, choice) {
+        try {
+          const stored = localStorage.getItem('wyr_reactions');
+          const data = stored ? JSON.parse(stored) : {};
+          const key = q.optionA + "|||" + q.optionB;
+          if (!data[key]) data[key] = { total: 0, A: 0 };
+          data[key].total++;
+          if (choice === 'A') data[key].A++;
+          localStorage.setItem('wyr_reactions', JSON.stringify(data));
+        } catch(e) {}
+      }
+
+      function generateQuestions(count, diff) {
+        let pool = QUESTION_POOL.filter(q => {
+          if (diff === "extreme") return q.difficulty === "extreme" || q.difficulty === "hard";
+          if (diff === "hard") return q.difficulty === "hard" || q.difficulty === "normal";
+          if (diff === "normal") return q.difficulty === "normal" || q.difficulty === "easy";
+          return true;
+        });
+        if (pool.length < count) pool = [...QUESTION_POOL];
+
+        const selected = [];
+        const usedKeys = getUsedQuestions();
+        const poolCopy = [...pool];
+
+        while (selected.length < count && poolCopy.length > 0) {
+          const idx = Math.floor(Math.random() * poolCopy.length);
+          const q = poolCopy.splice(idx, 1)[0];
+          const key = q.optionA + "|||" + q.optionB;
+          if (!usedKeys.includes(key) && !selected.some(s => (s.optionA + "|||" + s.optionB) === key)) {
+            selected.push(q);
+          }
+        }
+
+        if (selected.length < count) {
+          const remaining = [...QUESTION_POOL].filter(q => !selected.some(s => s.optionA === q.optionA && s.optionB === q.optionB));
+          while (selected.length < count && remaining.length > 0) {
+            const idx = Math.floor(Math.random() * remaining.length);
+            selected.push(remaining.splice(idx, 1)[0]);
+          }
+        }
+
+        return selected.slice(0, count);
+      }
+
+      function generateLifeStory(choices) {
+        const countA = choices.filter(c => c === 'A').length;
+        const countB = choices.length - countA;
+        const adventurous = countA > countB;
+        const balanced = Math.abs(countA - countB) <= 2;
+        
+        let story = "📖 *your forged life* 📖\n\n";
+        
+        if (balanced) {
+          story += "You were born under a twilight sky, perfectly balanced between light and shadow. ";
+          story += "Throughout your life, you navigated every crossroad with uncanny wisdom, never leaning too far in one direction. ";
+          story += "People admired your ability to see both sides of every argument. You built a career as a diplomat, mediator, or philosopher. ";
+        } else if (adventurous) {
+          story += "From the moment you could walk, you ran toward the unknown. Your adventurous spirit led you to climb mountains, cross oceans, and dance in thunderstorms. ";
+          story += "You lived a life of passion and intensity, collecting stories that would fill a thousand books. ";
+        } else {
+          story += "You entered this world with a calm, steady heart. You found beauty in simplicity—warm cups of tea, gentle rain, the embrace of loved ones. ";
+          story += "Your life was a sanctuary of peace, a quiet rebellion against the chaos of the world. ";
+        }
+
+        story += `\n\nWith ${countA} bold leaps and ${countB} grounded choices, your destiny unfolded like a tapestry woven from starlight and earth. `;
+        
+        if (countA >= totalRounds * 0.7) story += "You're a trailblazer, a legend whispered in the winds of fate.";
+        else if (countB >= totalRounds * 0.7) story += "You're the anchor that holds the world steady, a quiet force of nature.";
+        else story += "You're beautifully complex, a paradox wrapped in human skin.";
+        
+        story += "\n\n✨ *the end—or perhaps, the beginning.*";
+        return story;
+      }
+
+      function showLoadingScreen(callback) {
+        loadingScreen.classList.add('active');
+        const steps = [
+          "getting your answers...",
+          "determining your life with your chosen answers...",
+          "weaving the threads of destiny...",
+          "consulting the cosmic archives...",
+          "calibrating probability matrices...",
+          "infusing personality fragments...",
+          "almost there... finalizing your new reality..."
+        ];
+        let step = 0;
+        loadingSteps.textContent = steps[0];
+        const stepInterval = setInterval(() => {
+          step++;
+          if (step < steps.length) loadingSteps.textContent = steps[step];
+          else clearInterval(stepInterval);
+        }, 600);
+
+        setTimeout(() => {
+          clearInterval(stepInterval);
+          loadingScreen.classList.remove('active');
+          if (callback) callback();
+        }, 2800);
+      }
+
+      function finishGame() {
+        gameActive = false;
+        clearInterval(timerInterval);
+        soundGameComplete.play().catch(() => {});
+        triggerConfetti(150);
+
+        showLoadingScreen(() => {
+          const story = generateLifeStory(userChoices);
+          lifeDescriptionSpan.textContent = story;
+          lifeResultDiv.classList.add('visible');
+          roundDisplay.textContent = `✨ destiny forged ✨`;
+          questionEl.textContent = "your new life awaits...";
+          optionASpan.textContent = "—";
+          optionBSpan.textContent = "—";
+          optionABtn.disabled = true;
+          optionBBtn.disabled = true;
+        });
+      }
+
+      function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = maxTime;
+        timerFill.style.width = "100%";
+        timerFill.classList.remove("warning");
+
+        timerInterval = setInterval(() => {
+          timeLeft -= 0.1;
+          const percent = Math.max(0, (timeLeft / maxTime) * 100);
+          timerFill.style.width = percent + "%";
+          if (timeLeft <= 5) timerFill.classList.add("warning");
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            handleChoice(Math.random() > 0.5 ? 'A' : 'B');
+          }
+        }, 100);
+      }
+
+      function loadQuestion() {
+        if (currentRound > totalRounds || !gameActive) return;
+        const q = questions[currentRound - 1];
+        if (!q) return;
+        optionASpan.textContent = q.optionA;
+        optionBSpan.textContent = q.optionB;
+        questionEl.textContent = "would you rather...";
+        roundDisplay.textContent = `round ${currentRound} / ${totalRounds}`;
+        optionABtn.disabled = false;
+        optionBBtn.disabled = false;
+        complimentBar.textContent = "";
+        const percentA = getReactionPercent(q);
+        reactionBar.textContent = `📊 ~${percentA}% of souls chose option A`;
+        startTimer();
+      }
+
+      function handleChoice(choice) {
+        if (!gameActive || currentRound > totalRounds) return;
+        clearInterval(timerInterval);
+        soundSelect.play().catch(() => {});
+
+        const q = questions[currentRound - 1];
+        recordReaction(q, choice);
+        addUsedQuestion(q);
+        userChoices.push(choice);
+
+        const compliment = COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)];
+        complimentBar.textContent = "💬 " + compliment;
+
+        optionABtn.disabled = true;
+        optionBBtn.disabled = true;
+
+        if (currentRound === totalRounds) {
+          finishGame();
+          return;
+        }
+
+        soundRoundEnd.play().catch(() => {});
+        spawnConfetti(20);
+        if (!animationFrameId) updateConfetti();
+
+        setTimeout(() => {
+          currentRound++;
+          loadQuestion();
+        }, 500);
+      }
+
+      function startGame() {
+        const countInput = document.getElementById('questionCount');
+        let count = parseInt(countInput.value);
+        if (isNaN(count) || count < 10) count = 10;
+        if (count > 35) count = 35;
+        totalRounds = count;
+
+        difficulty = document.getElementById('difficultySelect').value;
+        if (difficulty === "easy") maxTime = 40;
+        else if (difficulty === "normal") maxTime = 25;
+        else if (difficulty === "hard") maxTime = 18;
+        else maxTime = 15;
+
+        currentTheme = document.getElementById('themeSelect').value;
+        document.documentElement.setAttribute('data-theme', currentTheme === "dark" ? "dark" : currentTheme);
+
+        questions = generateQuestions(totalRounds, difficulty);
+        currentRound = 1;
+        userChoices = [];
+        gameActive = true;
+        lifeResultDiv.classList.remove('visible');
+        setupMenu.classList.remove('active');
+        gameContainer.style.display = 'block';
+        loadQuestion();
+      }
+
+      document.getElementById('questionCount').addEventListener('input', function() {
+        const val = parseInt(this.value);
+        const warning = document.getElementById('questionWarning');
+        if (isNaN(val) || val < 10) {
+          warning.textContent = "⚠️ that's way too low... you need at least 10 for a proper story!";
+        } else if (val < 15) {
+          warning.textContent = "💡 more questions = a richer, more detailed life story at the end.";
+        } else {
+          warning.textContent = "";
+        }
+      });
+
+      document.getElementById('startGameBtn').addEventListener('click', startGame);
+
+      optionABtn.addEventListener('click', () => handleChoice('A'));
+      optionBBtn.addEventListener('click', () => handleChoice('B'));
+
+      document.addEventListener('keydown', (e) => {
+        if (e.shiftKey && e.key === 'D') {
+          e.preventDefault();
+          window.open('/dev-menu', '_blank');
+        }
+      });
+
+      window.addEventListener('beforeunload', () => {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      });
+    })();
+  </script>
+</body>
+</html>
