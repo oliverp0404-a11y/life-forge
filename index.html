@@ -778,8 +778,6 @@
 
       function startGame() {
         bgMusic.play().catch(() => {});
-        bgMusic.pause();
-        bgMusic.currentTime = 0;
         const countInput = document.getElementById('questionCount');
         let count = parseInt(countInput.value);
         if (isNaN(count) || count < 10) count = 10;
