@@ -424,19 +424,17 @@
   <script>  
 
     function checkRequirements() {
-        const haveDone = localStorage.getItem("haveDone");
-        if (haveDone === "True") {
-            document.getElementById('loadingScreen').classList.add('active');
-            setTimeout(() => {
-                window.location.href = "https://oliverp0404-a11y.github.io/life-forge/";
-            }, 2500);
-        } else if (haveDone === "False") {
-            window.location.href = "https://oliverp0404-a11y.github.io/requirements/";
-        } else {
-            window.location.href = "https://thispagedoesnotexist.com/404";
-        }
-        checkRequirements();
-    }
+      const haveDone = localStorage.getItem("haveDone");
+      
+      if (haveDone === "True") {
+          document.getElementById('loadingScreen').classList.add('active');
+          setTimeout(() => {
+              window.location.href = "https://oliverp0404-a11y.github.io/life-forge/";
+          }, 2500);
+      } else if (haveDone === "False") {
+          window.location.href = "https://oliverp0404-a11y.github.io/requirements/";
+      }
+  }
 
     (function() {
       const QUESTION_POOL = [
