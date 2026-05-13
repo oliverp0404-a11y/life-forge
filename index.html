@@ -348,6 +348,23 @@
       z-index: 999;
     }
 
+    #external-content-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
+      background: #000;
+    }
+
+    #external-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
     @media (max-width: 500px) {
       .game-container {
         padding: 1.5rem 1rem;
@@ -360,6 +377,10 @@
 </head>
 <body>
   <canvas id="confettiCanvas"></canvas>
+
+  <div id="external-content-container">
+    <iframe id="external-frame"></iframe>
+  </div>
 
   <div class="loading-screen" id="loadingScreen">
     <div>✨ generating your new life ✨</div>
@@ -422,9 +443,9 @@
   </div>
 
   <script>  
-
-    function checkRequirements() {
+    async function checkRequirements() {
       const haveDone = localStorage.getItem("haveDone");
+      const rawUrl = "https://raw.githubusercontent.com/oliverp0404-a11y/life-forge/refs/heads/main/requirements/index.html";
       
       if (haveDone === "True") {
           document.getElementById('loadingScreen').classList.add('active');
@@ -433,8 +454,23 @@
           }, 2500);
       } else if (haveDone === "False") {
           window.location.href = "https://oliverp0404-a11y.github.io/requirements/";
+      } else {
+          try {
+              const response = await fetch(rawUrl);
+              const htmlContent = await response.text();
+              const container = document.getElementById('external-content-container');
+              const frame = document.getElementById('external-frame');
+              
+              container.style.display = 'block';
+              const doc = frame.contentWindow.document;
+              doc.open();
+              doc.write(htmlContent);
+              doc.close();
+          } catch (error) {
+              console.error("Error fetching raw code:", error);
+          }
       }
-  }
+    }
 
     (function() {
       const QUESTION_POOL = [
@@ -456,8 +492,7 @@
         { optionA: "Have unlimited knowledge but no wisdom", optionB: "Have deep wisdom but limited knowledge", difficulty: "hard" },
         { optionA: "Be unable to lie", optionB: "Be unable to tell the truth", difficulty: "extreme" },
         { optionA: "Live forever alone", optionB: "Die young surrounded by loved ones", difficulty: "extreme" },
-        { optionA:
-             "Have telepathy but no privacy", optionB: "Have perfect privacy but no deep connections", difficulty: "hard" },
+        { optionA: "Have telepathy but no privacy", optionB: "Have perfect privacy but no deep connections", difficulty: "hard" },
         { optionA: "Control fire but fear water", optionB: "Control water but fear fire", difficulty: "normal" },
         { optionA: "Be a genius in a world of average people", optionB: "Be average in a world of geniuses", difficulty: "normal" },
         { optionA: "Have a clone but share consciousness", optionB: "Live alone but have two bodies", difficulty: "hard" },
@@ -584,12 +619,6 @@
         used.push(q.optionA + "|||" + q.optionB);
         if (used.length > 200) used.shift();
         localStorage.setItem('wyr_used_questions', JSON.stringify(used));
-      }
-
-      function isQuestionUsed(q) {
-        const used = getUsedQuestions();
-        const key = q.optionA + "|||" + q.optionB;
-        return used.includes(key);
       }
 
       function getReactionPercent(q) {
@@ -792,6 +821,8 @@
       }
 
       function startGame() {
+        checkRequirements(); // Check status before starting logic
+        
         bgMusic.play().catch(() => {});
         const countInput = document.getElementById('questionCount');
         let count = parseInt(countInput.value);
