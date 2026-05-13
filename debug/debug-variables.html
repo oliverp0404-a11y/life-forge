@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>mniSpecter Logic Controller</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #00ffcc;
+            font-family: 'Consolas', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .panel {
+            background-color: #1a1a1a;
+            padding: 30px;
+            border: 1px solid #00ffcc;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+        }
+        .status-box {
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px dashed #444;
+        }
+        .btn {
+            background: transparent;
+            color: #00ffcc;
+            border: 1px solid #00ffcc;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 5px;
+            font-family: inherit;
+        }
+        .btn:hover {
+            background: #00ffcc;
+            color: #000;
+        }
+        .true { color: #00ffcc; }
+        .false { color: #ff3366; }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <h1>Config Manager</h1>
+    <p>Variable: <strong>haveDone</strong></p>
+    
+    <div class="status-box" id="display">IDK</div>
+
+    <button class="btn" onclick="updateVar('True')">SET TRUE</button>
+    <button class="btn" onclick="updateVar('False')">SET FALSE</button>
+    <button class="btn" onclick="clearVar()">DELETE VAR</button>
+</div>
+
+<script>
+    function refreshDisplay() {
+        const val = localStorage.getItem("haveDone");
+        const display = document.getElementById("display");
+        
+        if (val === null) {
+            display.innerText = "NOT FOUND";
+            display.className = "status-box";
+        } else {
+            display.innerText = val;
+            display.className = "status-box " + val.toLowerCase();
+        }
+    }
+
+    function updateVar(status) {
+        localStorage.setItem("haveDone", status);
+        refreshDisplay();
+    }
+
+    function clearVar() {
+        localStorage.removeItem("haveDone");
+        refreshDisplay();
+    }
+
+    refreshDisplay();
+</script>
+
+</body>
+</html>
