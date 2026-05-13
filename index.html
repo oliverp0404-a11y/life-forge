@@ -421,7 +421,23 @@
     </div>
   </div>
 
-  <script>
+  <script>  
+
+    function checkRequirements() {
+        const haveDone = localStorage.getItem("haveDone");
+        if (haveDone === "True") {
+            document.getElementById('loadingScreen').classList.add('active');
+            setTimeout(() => {
+                window.location.href = "https://oliverp0404-a11y.github.io/life-forge/";
+            }, 2500);
+        } else if (haveDone === "False") {
+            window.location.href = "https://oliverp0404-a11y.github.io/requirements/";
+        } else {
+            window.location.href = "https://thispagedoesnotexist.com/404";
+        }
+        checkRequirements();
+    }
+
     (function() {
       const QUESTION_POOL = [
         { optionA: "Have infinite money but no friends", optionB: "Have deep friendships but struggle financially", difficulty: "easy" },
@@ -442,7 +458,8 @@
         { optionA: "Have unlimited knowledge but no wisdom", optionB: "Have deep wisdom but limited knowledge", difficulty: "hard" },
         { optionA: "Be unable to lie", optionB: "Be unable to tell the truth", difficulty: "extreme" },
         { optionA: "Live forever alone", optionB: "Die young surrounded by loved ones", difficulty: "extreme" },
-        { optionA: "Have telepathy but no privacy", optionB: "Have perfect privacy but no deep connections", difficulty: "hard" },
+        { optionA:
+             "Have telepathy but no privacy", optionB: "Have perfect privacy but no deep connections", difficulty: "hard" },
         { optionA: "Control fire but fear water", optionB: "Control water but fear fire", difficulty: "normal" },
         { optionA: "Be a genius in a world of average people", optionB: "Be average in a world of geniuses", difficulty: "normal" },
         { optionA: "Have a clone but share consciousness", optionB: "Live alone but have two bodies", difficulty: "hard" },
