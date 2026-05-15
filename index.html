@@ -790,7 +790,6 @@
 
       function startGame() {
         visitorCheck();
-        bgMusic.play().catch(() => {});
         const countInput = document.getElementById('questionCount');
         let count = parseInt(countInput.value);
         if (isNaN(count) || count < 10) count = 10;
